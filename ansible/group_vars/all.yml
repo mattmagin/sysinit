@@ -176,7 +176,6 @@ packages_wayland:
   - ffmpegthumbnailer
   - webp-pixbuf-loader
   - python-gobject
-  - python-terminaltexteffects
 
 # -- Input methods --
 packages_input:
@@ -227,6 +226,7 @@ aur_packages:
   - uwsm # Wayland session manager
   - xdg-terminal-exec # XDG terminal execution helper
   - ufw-docker # UFW Docker integration
+  - python-terminaltexteffects # Python terminal text effects
 
 # ============================================================================
 # Systemd services to enable

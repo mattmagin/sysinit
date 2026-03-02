@@ -118,7 +118,6 @@ packages_network:
   - avahi
   - nss-mdns
   - ufw
-  - ufw-docker
   - wireless-regdb
   - impala
 
@@ -227,6 +226,7 @@ aur_packages:
   - satty # screenshot tool
   - uwsm # Wayland session manager
   - xdg-terminal-exec # XDG terminal execution helper
+  - ufw-docker # UFW Docker integration
 
 # ============================================================================
 # Systemd services to enable

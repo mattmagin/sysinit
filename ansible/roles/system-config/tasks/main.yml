@@ -1,0 +1,143 @@
+---
+# System-level configuration files under /etc/
+
+# ---- Docker daemon config ----
+- name: Create Docker config directory
+  ansible.builtin.file:
+    path: /etc/docker
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Deploy Docker daemon.json
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+          "log-driver": "json-file",
+          "log-opts": { "max-size": "10m", "max-file": "5" },
+          "dns": ["172.17.0.1"],
+          "bip": "172.17.0.1/16"
+      }
+    mode: "0644"
+  become: true
+
+# ---- Docker DNS via systemd-resolved ----
+- name: Create resolved.conf.d directory
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Expose systemd-resolved to Docker network
+  ansible.builtin.copy:
+    dest: /etc/systemd/resolved.conf.d/20-docker-dns.conf
+    content: |
+      [Resolve]
+      DNSStubListenerExtra=172.17.0.1
+    mode: "0644"
+  become: true
+  notify: Restart systemd-resolved
+
+# ---- Docker boot optimization ----
+- name: Create Docker service override directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Prevent Docker from blocking boot on network-online.target
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/docker.service.d/no-block-boot.conf
+    content: |
+      [Unit]
+      DefaultDependencies=no
+    mode: "0644"
+  become: true
+  notify: Reload systemd daemon
+
+# ---- Faster shutdown ----
+- name: Create systemd system.conf.d directory
+  ansible.builtin.file:
+    path: /etc/systemd/system.conf.d
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Deploy faster shutdown config
+  ansible.builtin.copy:
+    dest: /etc/systemd/system.conf.d/10-faster-shutdown.conf
+    content: |
+      [Manager]
+      DefaultTimeoutStopSec=15s
+    mode: "0644"
+  become: true
+
+# ---- Logind: power button + lid switch ----
+- name: Create logind.conf.d directory
+  ansible.builtin.file:
+    path: /etc/systemd/logind.conf.d
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Deploy logind lid switch + power button policy
+  ansible.builtin.copy:
+    dest: /etc/systemd/logind.conf.d/omarchy.conf
+    content: |
+      [Login]
+      HandlePowerKey=ignore
+      HandleLidSwitch=suspend
+      HandleLidSwitchDocked=ignore
+      HandleLidSwitchExternalPower=ignore
+    mode: "0644"
+  become: true
+
+# ---- Printing: mDNS via Avahi ----
+- name: Disable multicast DNS in resolved (Avahi handles it)
+  ansible.builtin.copy:
+    dest: /etc/systemd/resolved.conf.d/10-disable-multicast.conf
+    content: |
+      [Resolve]
+      MulticastDNS=no
+    mode: "0644"
+  become: true
+
+- name: Configure nsswitch.conf for mDNS resolution
+  ansible.builtin.lineinfile:
+    path: /etc/nsswitch.conf
+    regexp: '^hosts:'
+    line: 'hosts: mymachines mdns_minimal [NOTFOUND=return] resolve files myhostname dns'
+  become: true
+
+# ---- SDDM autologin ----
+- name: Create SDDM config directory
+  ansible.builtin.file:
+    path: /etc/sddm.conf.d
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Deploy SDDM autologin config
+  ansible.builtin.copy:
+    dest: /etc/sddm.conf.d/autologin.conf
+    content: |
+      [Autologin]
+      User={{ ansible_user_id }}
+      Session=hyprland-uwsm
+
+      [Theme]
+      Current=breeze
+    mode: "0644"
+  become: true
+
+# ---- Networking: disable wait-online ----
+- name: Disable systemd-networkd-wait-online (prevents boot delay)
+  ansible.builtin.systemd:
+    name: systemd-networkd-wait-online.service
+    enabled: false
+    masked: true
+  become: true
+

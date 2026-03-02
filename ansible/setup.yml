@@ -1,0 +1,46 @@
+---
+# Omarchy-derived system provisioning playbook
+# Run with: ansible-playbook --connection=local -K setup.yml
+#
+# This playbook configures an Arch Linux machine with:
+# - All required packages (pacman + AUR)
+# - GPU drivers (auto-detected AMD vs NVIDIA)
+# - Hardware-specific fixes (Framework 13, etc.)
+# - System config files (/etc/)
+# - Systemd services
+# - User setup (groups, shell)
+# - Dev tool bootstrapping (mise, bun)
+
+- name: Provision system
+  hosts: localhost
+  become: false
+
+  pre_tasks:
+    - name: Verify running on Arch Linux (or derivative)
+      ansible.builtin.assert:
+        that: ansible_os_family == "Archlinux"
+        fail_msg: >-
+          This playbook only supports Arch Linux and Arch-based derivatives
+          (CachyOS, EndeavourOS, etc.). Detected os_family: {{ ansible_os_family }}
+
+  roles:
+    - role: packages
+      tags: [packages]
+
+    - role: gpu
+      tags: [gpu, hardware]
+
+    - role: hardware
+      tags: [hardware]
+
+    - role: system-config
+      tags: [system-config]
+
+    - role: services
+      tags: [services]
+
+    - role: user
+      tags: [user]
+
+    - role: dev-tools
+      tags: [dev-tools]

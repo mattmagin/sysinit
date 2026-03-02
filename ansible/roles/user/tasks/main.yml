@@ -1,0 +1,25 @@
+---
+# User account configuration: groups, shell, directories
+
+- name: Add user to required groups
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: "{{ user_groups }}"
+    append: true
+  become: true
+
+- name: Set login shell to zsh
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: "{{ user_shell }}"
+  become: true
+
+- name: Create standard user directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ ansible_env.HOME }}/.local/bin"
+    - "{{ ansible_env.HOME }}/.local/share/applications"
+    - "{{ ansible_env.HOME }}/.config"

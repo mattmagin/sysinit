@@ -1,0 +1,5 @@
+# Elephant (Walker indexer) config — managed by chezmoi
+# Search by Keywords= and GenericName= fields in .desktop files
+show_actions = false
+only_search_title = false
+history = false

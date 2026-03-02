@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Audio Settings
+GenericName=Sound Control
+Exec=omarchy-launch-audio
+Icon=audio-volume-high
+Terminal=false
+Type=Application
+Categories=Settings;Audio;
+Keywords=Audio;Sound;Volume;Speaker;Headphones;Settings;Pavucontrol;
+NoDisplay=true

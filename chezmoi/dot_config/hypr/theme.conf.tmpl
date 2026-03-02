@@ -1,0 +1,13 @@
+{{- /* Hyprland theme colors — managed by chezmoi */ -}}
+{{- /* Strip leading # from accent for Hyprland rgb() format */ -}}
+{{- $accentStrip := trimPrefix "#" .theme.accent -}}
+
+$activeBorderColor = rgb({{ $accentStrip }})
+
+general {
+  col.active_border = $activeBorderColor
+}
+
+group {
+  col.border_active = $activeBorderColor
+}

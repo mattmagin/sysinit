@@ -1,0 +1,59 @@
+{{- $profile := promptStringOnce . "machine.profile" "Machine profile (framework13/desktop)" -}}
+{{- $gpuType := promptStringOnce . "gpu.type" "GPU type (amd/nvidia)" -}}
+{{- $displayScale := promptStringOnce . "display.scale" "Display scale factor (e.g. 1, 1.5)" -}}
+{{- $gdkScale := promptStringOnce . "display.gdk_scale" "GDK scale (integer: 1 or 2)" -}}
+{{- $themeName := promptStringOnce . "theme.name" "Theme name (e.g. matte-black)" -}}
+{{- $gitName := promptStringOnce . "git.name" "Git user name" -}}
+{{- $gitEmail := promptStringOnce . "git.email" "Git email address" -}}
+
+encryption = "age"
+[age]
+  identity = "~/.config/chezmoi/key.txt"
+  recipient = "age1your-public-key-here"
+
+[data]
+  [data.machine]
+    profile = {{ $profile | quote }}
+  [data.gpu]
+    type = {{ $gpuType | quote }}
+  [data.display]
+    scale = {{ $displayScale }}
+    gdk_scale = {{ $gdkScale }}
+
+  # -----------------------------------------------------------------------
+  # Theme configuration
+  # To switch themes, update name and colors below, then run: chezmoi apply
+  # Colors are from themes/<name>/colors.toml in the chezmoi source.
+  # -----------------------------------------------------------------------
+  [data.theme]
+    name = {{ $themeName | quote }}
+
+    # Matte Black theme colors (default)
+    # Replace these with values from the desired theme's colors.toml
+    accent = "#e68e0d"
+    cursor = "#eaeaea"
+    foreground = "#bebebe"
+    background = "#121212"
+    selection_foreground = "#bebebe"
+    selection_background = "#333333"
+
+    color0 = "#333333"
+    color1 = "#D35F5F"
+    color2 = "#FFC107"
+    color3 = "#b91c1c"
+    color4 = "#e68e0d"
+    color5 = "#D35F5F"
+    color6 = "#bebebe"
+    color7 = "#bebebe"
+    color8 = "#8a8a8d"
+    color9 = "#B91C1C"
+    color10 = "#FFC107"
+    color11 = "#b90a0a"
+    color12 = "#f59e0b"
+    color13 = "#B91C1C"
+    color14 = "#eaeaea"
+    color15 = "#ffffff"
+
+  [data.git]
+    name = {{ $gitName | quote }}
+    email = {{ $gitEmail | quote }}

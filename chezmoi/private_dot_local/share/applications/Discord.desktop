@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Discord
+GenericName=Voice and Text Chat
+Exec=discord %U
+Icon=discord
+Terminal=false
+Type=Application
+Categories=Network;Chat;
+Keywords=discord;chat;voice;gaming;community;

@@ -1,0 +1,232 @@
+{{- /* Hyprland key bindings — managed by chezmoi */ -}}
+{{- /* App launchers stripped; use walker (SUPER+Space) to find apps */ -}}
+
+# ===========================================================================
+# Application launch — terminal only (everything else via walker)
+# ===========================================================================
+bindd = SUPER, RETURN, Terminal, exec, uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)"
+
+# ===========================================================================
+# Layout toggle (dwindle ↔ master)
+# ===========================================================================
+bindd = SUPER, M, Toggle layout (dwindle/master), exec, ~/.config/hypr/scripts/toggle-layout.sh
+
+# ===========================================================================
+# Copy / Paste / Clipboard
+# ===========================================================================
+bindd = SUPER, C, Universal copy, sendshortcut, CTRL, Insert,
+bindd = SUPER, V, Universal paste, sendshortcut, SHIFT, Insert,
+bindd = SUPER, X, Universal cut, sendshortcut, CTRL, X,
+bindd = SUPER CTRL, V, Clipboard manager, exec, omarchy-launch-walker -m clipboard
+
+# ===========================================================================
+# Tiling / Window management
+# ===========================================================================
+# Close windows
+bindd = SUPER, W, Close window, killactive,
+bindd = CTRL ALT, DELETE, Close all windows, exec, omarchy-hyprland-window-close-all
+
+# Control tiling
+bindd = SUPER, J, Toggle window split, togglesplit,
+bindd = SUPER, P, Pseudo window, pseudo,
+bindd = SUPER, T, Toggle window floating/tiling, togglefloating,
+bindd = SUPER, F, Full screen, fullscreen, 0
+bindd = SUPER CTRL, F, Tiled full screen, fullscreenstate, 0 2
+bindd = SUPER ALT, F, Full width, fullscreen, 1
+bindd = SUPER, O, Pop window out (float & pin), exec, omarchy-hyprland-window-pop
+
+# Move focus with SUPER + arrow keys
+bindd = SUPER, LEFT, Move window focus left, movefocus, l
+bindd = SUPER, RIGHT, Move window focus right, movefocus, r
+bindd = SUPER, UP, Move window focus up, movefocus, u
+bindd = SUPER, DOWN, Move window focus down, movefocus, d
+
+# Switch workspaces with SUPER + [1-9; 0]
+bindd = SUPER, code:10, Switch to workspace 1, workspace, 1
+bindd = SUPER, code:11, Switch to workspace 2, workspace, 2
+bindd = SUPER, code:12, Switch to workspace 3, workspace, 3
+bindd = SUPER, code:13, Switch to workspace 4, workspace, 4
+bindd = SUPER, code:14, Switch to workspace 5, workspace, 5
+bindd = SUPER, code:15, Switch to workspace 6, workspace, 6
+bindd = SUPER, code:16, Switch to workspace 7, workspace, 7
+bindd = SUPER, code:17, Switch to workspace 8, workspace, 8
+bindd = SUPER, code:18, Switch to workspace 9, workspace, 9
+bindd = SUPER, code:19, Switch to workspace 10, workspace, 10
+
+# Move active window to a workspace with SUPER + SHIFT + [1-9; 0]
+bindd = SUPER SHIFT, code:10, Move window to workspace 1, movetoworkspace, 1
+bindd = SUPER SHIFT, code:11, Move window to workspace 2, movetoworkspace, 2
+bindd = SUPER SHIFT, code:12, Move window to workspace 3, movetoworkspace, 3
+bindd = SUPER SHIFT, code:13, Move window to workspace 4, movetoworkspace, 4
+bindd = SUPER SHIFT, code:14, Move window to workspace 5, movetoworkspace, 5
+bindd = SUPER SHIFT, code:15, Move window to workspace 6, movetoworkspace, 6
+bindd = SUPER SHIFT, code:16, Move window to workspace 7, movetoworkspace, 7
+bindd = SUPER SHIFT, code:17, Move window to workspace 8, movetoworkspace, 8
+bindd = SUPER SHIFT, code:18, Move window to workspace 9, movetoworkspace, 9
+bindd = SUPER SHIFT, code:19, Move window to workspace 10, movetoworkspace, 10
+
+# Move active window silently with SUPER + SHIFT + ALT + [1-9; 0]
+bindd = SUPER SHIFT ALT, code:10, Move window silently to workspace 1, movetoworkspacesilent, 1
+bindd = SUPER SHIFT ALT, code:11, Move window silently to workspace 2, movetoworkspacesilent, 2
+bindd = SUPER SHIFT ALT, code:12, Move window silently to workspace 3, movetoworkspacesilent, 3
+bindd = SUPER SHIFT ALT, code:13, Move window silently to workspace 4, movetoworkspacesilent, 4
+bindd = SUPER SHIFT ALT, code:14, Move window silently to workspace 5, movetoworkspacesilent, 5
+bindd = SUPER SHIFT ALT, code:15, Move window silently to workspace 6, movetoworkspacesilent, 6
+bindd = SUPER SHIFT ALT, code:16, Move window silently to workspace 7, movetoworkspacesilent, 7
+bindd = SUPER SHIFT ALT, code:17, Move window silently to workspace 8, movetoworkspacesilent, 8
+bindd = SUPER SHIFT ALT, code:18, Move window silently to workspace 9, movetoworkspacesilent, 9
+bindd = SUPER SHIFT ALT, code:19, Move window silently to workspace 10, movetoworkspacesilent, 10
+
+# Scratchpad
+bindd = SUPER, S, Toggle scratchpad, togglespecialworkspace, scratchpad
+bindd = SUPER ALT, S, Move window to scratchpad, movetoworkspacesilent, special:scratchpad
+
+# TAB between workspaces
+bindd = SUPER, TAB, Next workspace, workspace, e+1
+bindd = SUPER SHIFT, TAB, Previous workspace, workspace, e-1
+bindd = SUPER CTRL, TAB, Former workspace, workspace, previous
+
+# Move workspaces to other monitors
+bindd = SUPER SHIFT ALT, LEFT, Move workspace to left monitor, movecurrentworkspacetomonitor, l
+bindd = SUPER SHIFT ALT, RIGHT, Move workspace to right monitor, movecurrentworkspacetomonitor, r
+bindd = SUPER SHIFT ALT, UP, Move workspace to up monitor, movecurrentworkspacetomonitor, u
+bindd = SUPER SHIFT ALT, DOWN, Move workspace to down monitor, movecurrentworkspacetomonitor, d
+
+# Swap windows
+bindd = SUPER SHIFT, LEFT, Swap window to the left, swapwindow, l
+bindd = SUPER SHIFT, RIGHT, Swap window to the right, swapwindow, r
+bindd = SUPER SHIFT, UP, Swap window up, swapwindow, u
+bindd = SUPER SHIFT, DOWN, Swap window down, swapwindow, d
+
+# ALT+TAB window cycling
+bindd = ALT, TAB, Cycle to next window, cyclenext
+bindd = ALT SHIFT, TAB, Cycle to prev window, cyclenext, prev
+bindd = ALT, TAB, Reveal active window on top, bringactivetotop
+bindd = ALT SHIFT, TAB, Reveal active window on top, bringactivetotop
+
+# Resize active window
+bindd = SUPER, code:20, Expand window left, resizeactive, -100 0
+bindd = SUPER, code:21, Shrink window left, resizeactive, 100 0
+bindd = SUPER SHIFT, code:20, Shrink window up, resizeactive, 0 -100
+bindd = SUPER SHIFT, code:21, Expand window down, resizeactive, 0 100
+
+# Scroll through workspaces
+bindd = SUPER, mouse_down, Scroll active workspace forward, workspace, e+1
+bindd = SUPER, mouse_up, Scroll active workspace backward, workspace, e-1
+
+# Move/resize with mouse
+bindmd = SUPER, mouse:272, Move window, movewindow
+bindmd = SUPER, mouse:273, Resize window, resizewindow
+
+# Groups
+bindd = SUPER, G, Toggle window grouping, togglegroup
+bindd = SUPER ALT, G, Move active window out of group, moveoutofgroup
+bindd = SUPER ALT, LEFT, Move window to group on left, moveintogroup, l
+bindd = SUPER ALT, RIGHT, Move window to group on right, moveintogroup, r
+bindd = SUPER ALT, UP, Move window to group on top, moveintogroup, u
+bindd = SUPER ALT, DOWN, Move window to group on bottom, moveintogroup, d
+bindd = SUPER ALT, TAB, Next window in group, changegroupactive, f
+bindd = SUPER ALT SHIFT, TAB, Previous window in group, changegroupactive, b
+bindd = SUPER CTRL, LEFT, Move grouped window focus left, changegroupactive, b
+bindd = SUPER CTRL, RIGHT, Move grouped window focus right, changegroupactive, f
+bindd = SUPER ALT, mouse_down, Next window in group, changegroupactive, f
+bindd = SUPER ALT, mouse_up, Previous window in group, changegroupactive, b
+bindd = SUPER ALT, code:10, Switch to group window 1, changegroupactive, 1
+bindd = SUPER ALT, code:11, Switch to group window 2, changegroupactive, 2
+bindd = SUPER ALT, code:12, Switch to group window 3, changegroupactive, 3
+bindd = SUPER ALT, code:13, Switch to group window 4, changegroupactive, 4
+bindd = SUPER ALT, code:14, Switch to group window 5, changegroupactive, 5
+
+# ===========================================================================
+# Media keys
+# ===========================================================================
+$osdclient = swayosd-client --monitor "$(hyprctl monitors -j | jq -r '.[] | select(.focused == true).name')"
+
+bindeld = ,XF86AudioRaiseVolume, Volume up, exec, $osdclient --output-volume raise
+bindeld = ,XF86AudioLowerVolume, Volume down, exec, $osdclient --output-volume lower
+bindeld = ,XF86AudioMute, Mute, exec, $osdclient --output-volume mute-toggle
+bindeld = ,XF86AudioMicMute, Mute microphone, exec, $osdclient --input-volume mute-toggle
+bindeld = ,XF86MonBrightnessUp, Brightness up, exec, omarchy-brightness-display +5%
+bindeld = ,XF86MonBrightnessDown, Brightness down, exec, omarchy-brightness-display 5%-
+bindeld = ,XF86KbdBrightnessUp, Keyboard brightness up, exec, omarchy-brightness-keyboard up
+bindeld = ,XF86KbdBrightnessDown, Keyboard brightness down, exec, omarchy-brightness-keyboard down
+
+# Precise 1% adjustments with Alt
+bindeld = ALT, XF86AudioRaiseVolume, Volume up precise, exec, $osdclient --output-volume +1
+bindeld = ALT, XF86AudioLowerVolume, Volume down precise, exec, $osdclient --output-volume -1
+bindeld = ALT, XF86MonBrightnessUp, Brightness up precise, exec, omarchy-brightness-display +1%
+bindeld = ALT, XF86MonBrightnessDown, Brightness down precise, exec, omarchy-brightness-display 1%-
+
+# Player controls
+bindld = , XF86AudioNext, Next track, exec, $osdclient --playerctl next
+bindld = , XF86AudioPause, Pause, exec, $osdclient --playerctl play-pause
+bindld = , XF86AudioPlay, Play, exec, $osdclient --playerctl play-pause
+bindld = , XF86AudioPrev, Previous track, exec, $osdclient --playerctl previous
+
+# Switch audio output with Super + Mute
+bindld = SUPER, XF86AudioMute, Switch audio output, exec, omarchy-cmd-audio-switch
+
+# ===========================================================================
+# Utilities (menus, screenshots, notifications, controls)
+# ===========================================================================
+# Menus
+bindd = SUPER, SPACE, Launch apps, exec, omarchy-launch-walker
+bindd = SUPER CTRL, E, Emoji picker, exec, omarchy-launch-walker -m symbols
+bindd = SUPER CTRL, C, Capture menu, exec, omarchy-menu capture
+bindd = SUPER ALT, SPACE, Omarchy menu, exec, omarchy-menu
+bindd = SUPER, ESCAPE, System menu, exec, omarchy-menu system
+bindld = , XF86PowerOff, Power menu, exec, omarchy-menu system
+bindd = SUPER, K, Show key bindings, exec, omarchy-menu-keybindings
+bindd = , XF86Calculator, Calculator, exec, gnome-calculator
+
+# Aesthetics
+bindd = SUPER SHIFT, SPACE, Toggle top bar, exec, omarchy-toggle-waybar
+bindd = SUPER CTRL, SPACE, Next background in theme, exec, omarchy-theme-bg-next
+bindd = SUPER SHIFT CTRL, SPACE, Theme menu, exec, omarchy-menu theme
+bindd = SUPER, BACKSPACE, Toggle window transparency, exec, hyprctl dispatch setprop "address:$(hyprctl activewindow -j | jq -r '.address')" opaque toggle
+bindd = SUPER SHIFT, BACKSPACE, Toggle workspace gaps, exec, omarchy-hyprland-workspace-toggle-gaps
+
+# Notifications
+bindd = SUPER, COMMA, Dismiss last notification, exec, makoctl dismiss
+bindd = SUPER SHIFT, COMMA, Dismiss all notifications, exec, makoctl dismiss --all
+bindd = SUPER CTRL, COMMA, Toggle silencing notifications, exec, makoctl mode -t do-not-disturb && makoctl mode | grep -q 'do-not-disturb' && notify-send "Silenced notifications" || notify-send "Enabled notifications"
+bindd = SUPER ALT, COMMA, Invoke last notification, exec, makoctl invoke
+bindd = SUPER SHIFT ALT, COMMA, Restore last notification, exec, makoctl restore
+
+# Toggles
+bindd = SUPER CTRL, I, Toggle locking on idle, exec, omarchy-toggle-idle
+bindd = SUPER CTRL, N, Toggle nightlight, exec, omarchy-toggle-nightlight
+
+# Screenshots
+bindd = , PRINT, Screenshot with editing, exec, omarchy-cmd-screenshot
+bindd = SHIFT, PRINT, Screenshot to clipboard, exec, omarchy-cmd-screenshot smart clipboard
+bindd = ALT, PRINT, Screenrecording, exec, omarchy-menu screenrecord
+bindd = SUPER, PRINT, Color picker, exec, pkill hyprpicker || hyprpicker -a
+
+# File sharing
+bindd = SUPER CTRL, S, Share, exec, omarchy-menu share
+
+# Info
+bindd = SUPER CTRL ALT, T, Show time, exec, notify-send "    $(date +"%A %H:%M  —  %d %B W%V %Y")"
+bindd = SUPER CTRL ALT, B, Show battery remaining, exec, notify-send "󰁹    Battery is at $(omarchy-battery-remaining)%"
+
+# Control panels
+bindd = SUPER CTRL, A, Audio controls, exec, omarchy-launch-audio
+bindd = SUPER CTRL, B, Bluetooth controls, exec, omarchy-launch-bluetooth
+bindd = SUPER CTRL, W, Wifi controls, exec, omarchy-launch-wifi
+bindd = SUPER CTRL, T, Activity, exec, omarchy-launch-tui btop
+
+# Dictation
+bindd  = SUPER CTRL, X, Start dictation, exec, voxtype record start
+binddr = SUPER CTRL, X, Stop dictation, exec, voxtype record stop
+
+# Lock
+bindd = SUPER CTRL, L, Lock system, exec, omarchy-lock-screen
+
+# ===========================================================================
+# Lid switch (Framework 13 only)
+# ===========================================================================
+{{ if eq .machine.profile "framework13" -}}
+bindl = , switch:on:Lid Switch, exec, ~/.config/hypr/scripts/lid-closed.sh
+bindl = , switch:off:Lid Switch, exec, ~/.config/hypr/scripts/lid-opened.sh
+{{ end -}}

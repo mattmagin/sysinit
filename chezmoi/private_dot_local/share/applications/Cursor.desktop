@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Cursor
+GenericName=Code Editor
+Exec=cursor %F
+Icon=cursor
+Terminal=false
+Type=Application
+Categories=Development;IDE;TextEditor;
+Keywords=Editor;Code;IDE;VSCode;VS Code;Visual Studio;Programming;
+MimeType=text/plain;

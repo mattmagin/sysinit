@@ -1,0 +1,28 @@
+{{- /* Git config — managed by chezmoi */ -}}
+{{- /* User info injected from Bitwarden CLI or chezmoi data */ -}}
+
+[user]
+  name = {{ .git.name | default "Your Name" }}
+  email = {{ .git.email | default "you@example.com" }}
+
+[init]
+  defaultBranch = main
+
+[core]
+  editor = hx
+  autocrlf = input
+
+[push]
+  autoSetupRemote = true
+
+[pull]
+  rebase = true
+
+[credential]
+  helper = /usr/lib/git-core/git-credential-libsecret
+
+[merge]
+  conflictstyle = zdiff3
+
+[diff]
+  algorithm = histogram

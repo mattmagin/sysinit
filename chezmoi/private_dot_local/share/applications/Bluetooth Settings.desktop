@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Bluetooth Settings
+GenericName=Bluetooth Configuration
+Exec=omarchy-launch-bluetooth
+Icon=bluetooth
+Terminal=false
+Type=Application
+Categories=Settings;
+Keywords=Bluetooth;Settings;Pair;Device;Wireless;
+NoDisplay=true

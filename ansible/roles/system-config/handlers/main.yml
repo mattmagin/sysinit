@@ -1,0 +1,15 @@
+---
+- name: Restart systemd-resolved
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: restarted
+  become: true
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+
+- name: Update Plymouth initramfs
+  ansible.builtin.command: plymouth-set-default-theme -R
+  become: true

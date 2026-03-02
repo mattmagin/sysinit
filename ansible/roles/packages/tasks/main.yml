@@ -1,0 +1,46 @@
+---
+# Install all declared packages via pacman and AUR (yay)
+
+- name: Combine all pacman package lists
+  ansible.builtin.set_fact:
+    all_pacman_packages: >-
+      {{
+        packages_desktop +
+        packages_terminal +
+        packages_cli +
+        packages_dev +
+        packages_gui +
+        packages_audio +
+        packages_network +
+        packages_printing +
+        packages_bluetooth +
+        packages_hardware +
+        packages_fonts +
+        packages_filesystem +
+        packages_wayland +
+        packages_input +
+        packages_launcher +
+        packages_secrets +
+        packages_kernel
+      }}
+
+- name: Install pacman packages
+  community.general.pacman:
+    name: "{{ all_pacman_packages }}"
+    state: present
+  become: true
+
+- name: Check if yay is installed
+  ansible.builtin.command: which yay
+  register: yay_check
+  changed_when: false
+  failed_when: false
+
+- name: Install AUR packages via yay
+  ansible.builtin.command: >
+    yay -S --noconfirm --needed {{ item }}
+  loop: "{{ aur_packages }}"
+  when: yay_check.rc == 0
+  register: aur_result
+  changed_when: "'installing' in aur_result.stdout | default('')"
+  become: false

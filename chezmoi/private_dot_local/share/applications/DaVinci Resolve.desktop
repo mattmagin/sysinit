@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=DaVinci Resolve
+GenericName=Video Editor
+Exec=/opt/resolve/bin/resolve %u
+Icon=DV_Resolve
+Terminal=false
+Type=Application
+Categories=AudioVideo;Video;
+Keywords=Video;Editor;Color;Grading;DaVinci;Premiere;FinalCut;Final Cut;

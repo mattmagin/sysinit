@@ -1,0 +1,177 @@
+---
+# Auto-detect GPU hardware and install appropriate drivers
+# Supports: AMD (integrated/discrete), Intel (integrated), and NVIDIA (Turing+)
+#
+# On Arch derivatives like CachyOS, GPU drivers may already be installed
+# (e.g. via cachyos-kernel-manager or the installer). We detect existing
+# driver packages and skip installation when they're already present to
+# avoid conflicts with distro-provided drivers.
+
+# ============================================================================
+# Existing driver detection (for Arch derivatives like CachyOS)
+# ============================================================================
+
+- name: Check for existing AMD GPU packages
+  ansible.builtin.shell: pacman -Qq mesa vulkan-radeon 2>/dev/null
+  register: existing_amd_packages
+  changed_when: false
+  failed_when: false
+
+- name: Check for existing Intel GPU packages
+  ansible.builtin.shell: pacman -Qq mesa vulkan-intel 2>/dev/null
+  register: existing_intel_packages
+  changed_when: false
+  failed_when: false
+
+- name: Check for existing NVIDIA GPU packages
+  ansible.builtin.shell: pacman -Qq nvidia-utils 2>/dev/null || pacman -Qq nvidia-open-dkms 2>/dev/null || pacman -Qq nvidia-dkms 2>/dev/null
+  register: existing_nvidia_packages
+  changed_when: false
+  failed_when: false
+
+# ============================================================================
+# AMD GPU
+# ============================================================================
+
+- name: Detect AMD GPU
+  ansible.builtin.shell: lspci | grep -iE 'vga|3d|display' | grep -i 'amd\|radeon'
+  register: amd_gpu
+  changed_when: false
+  failed_when: false
+
+- name: Install AMD GPU packages
+  community.general.pacman:
+    name:
+      - mesa
+      - lib32-mesa
+      - vulkan-radeon
+      - lib32-vulkan-radeon
+      - libva-mesa-driver
+      - mesa-vdpau
+    state: present
+  become: true
+  when: amd_gpu.rc == 0 and existing_amd_packages.rc != 0
+
+- name: Install OpenCL for AMD (DaVinci Resolve support)
+  community.general.pacman:
+    name:
+      - opencl-mesa
+    state: present
+  become: true
+  when: amd_gpu.rc == 0
+
+- name: AMD GPU packages already present (skipping)
+  ansible.builtin.debug:
+    msg: "AMD GPU packages already installed — skipping driver installation"
+  when: amd_gpu.rc == 0 and existing_amd_packages.rc == 0
+
+# ============================================================================
+# Intel GPU
+# ============================================================================
+
+- name: Detect Intel GPU
+  ansible.builtin.shell: lspci | grep -iE 'vga|3d|display' | grep -i 'intel'
+  register: intel_gpu
+  changed_when: false
+  failed_when: false
+
+- name: Install Intel GPU packages
+  community.general.pacman:
+    name:
+      - mesa
+      - lib32-mesa
+      - vulkan-intel
+      - lib32-vulkan-intel
+      - intel-media-driver
+    state: present
+  become: true
+  when: intel_gpu.rc == 0 and existing_intel_packages.rc != 0
+
+- name: Intel GPU packages already present (skipping)
+  ansible.builtin.debug:
+    msg: "Intel GPU packages already installed — skipping driver installation"
+  when: intel_gpu.rc == 0 and existing_intel_packages.rc == 0
+
+# ============================================================================
+# NVIDIA GPU
+# ============================================================================
+
+- name: Detect NVIDIA GPU
+  ansible.builtin.shell: lspci | grep -i 'nvidia'
+  register: nvidia_gpu
+  changed_when: false
+  failed_when: false
+
+# Detect Turing+ (GTX 16xx, RTX 20xx-50xx) for nvidia-open-dkms
+- name: Detect NVIDIA Turing+ GPU
+  ansible.builtin.shell: >
+    lspci | grep -i nvidia |
+    grep -qE "GTX 16[0-9]{2}|RTX [2-5][0-9]{3}|Quadro RTX|RTX A[0-9]{4}"
+  register: nvidia_turing_plus
+  changed_when: false
+  failed_when: false
+  when: nvidia_gpu.rc == 0
+
+- name: NVIDIA GPU packages already present (skipping)
+  ansible.builtin.debug:
+    msg: "NVIDIA GPU packages already installed — skipping driver installation"
+  when: nvidia_gpu.rc == 0 and existing_nvidia_packages.rc == 0
+
+- name: Install NVIDIA GPU packages (Turing+ / open kernel module)
+  community.general.pacman:
+    name:
+      - nvidia-open-dkms
+      - nvidia-utils
+      - lib32-nvidia-utils
+      - libva-nvidia-driver
+      - egl-wayland
+    state: present
+  become: true
+  when: nvidia_gpu.rc == 0 and existing_nvidia_packages.rc != 0 and (nvidia_turing_plus.rc | default(1)) == 0
+
+# Legacy NVIDIA (Maxwell/Pascal/Volta)
+- name: Detect NVIDIA legacy GPU (Maxwell/Pascal/Volta)
+  ansible.builtin.shell: >
+    lspci | grep -i nvidia |
+    grep -qE "GTX (9[0-9]{2}|10[0-9]{2})|GT 10[0-9]{2}|Quadro [PM][0-9]{3,4}|MX"
+  register: nvidia_legacy
+  changed_when: false
+  failed_when: false
+  when: nvidia_gpu.rc == 0 and existing_nvidia_packages.rc != 0 and (nvidia_turing_plus.rc | default(0)) != 0
+
+- name: Install NVIDIA GPU packages (legacy / proprietary kernel module)
+  community.general.pacman:
+    name:
+      - nvidia-580xx-dkms
+      - nvidia-580xx-utils
+      - lib32-nvidia-580xx-utils
+    state: present
+  become: true
+  when: nvidia_gpu.rc == 0 and existing_nvidia_packages.rc != 0 and (nvidia_legacy.rc | default(1)) == 0
+
+# ---- NVIDIA config (always applied when NVIDIA GPU is present) ----
+
+- name: Configure NVIDIA modprobe (early KMS)
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/nvidia.conf
+    content: "options nvidia_drm modeset=1\n"
+    mode: "0644"
+  become: true
+  when: nvidia_gpu.rc == 0
+
+- name: Configure NVIDIA mkinitcpio (early module loading)
+  ansible.builtin.copy:
+    dest: /etc/mkinitcpio.conf.d/nvidia.conf
+    content: "MODULES+=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)\n"
+    mode: "0644"
+  become: true
+  when: nvidia_gpu.rc == 0
+  notify: Rebuild initramfs
+
+- name: Install CUDA for NVIDIA (DaVinci Resolve support)
+  community.general.pacman:
+    name:
+      - cuda
+    state: present
+  become: true
+  when: nvidia_gpu.rc == 0

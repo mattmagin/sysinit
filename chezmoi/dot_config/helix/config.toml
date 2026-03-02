@@ -1,0 +1,25 @@
+# Helix editor config — managed by chezmoi
+# $EDITOR for terminal editing tasks
+
+theme = "default"
+
+[editor]
+line-number = "relative"
+mouse = true
+cursorline = true
+auto-save = true
+true-color = true
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+[editor.indent-guides]
+render = true
+
+[editor.soft-wrap]
+enable = true

@@ -1,0 +1,87 @@
+---
+# Plymouth configuration for disk encryption unlock UI
+
+# ---- Install Plymouth packages (if not already installed) ----
+# Note: plymouth is already in packages_desktop, but we ensure it's here for clarity
+- name: Ensure Plymouth packages are installed
+  community.general.pacman:
+    name:
+      - plymouth
+      - cryptsetup
+    state: present
+  become: true
+
+# ---- Configure mkinitcpio hooks for encryption ----
+- name: Create mkinitcpio.conf.d directory
+  ansible.builtin.file:
+    path: /etc/mkinitcpio.conf.d
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Deploy mkinitcpio encryption hooks configuration
+  ansible.builtin.copy:
+    src: mkinitcpio-encrypt.conf
+    dest: /etc/mkinitcpio.conf.d/encrypt.conf
+    mode: "0644"
+  become: true
+  notify: Rebuild initramfs
+
+# ---- Configure Plymouth ----
+- name: Create Plymouth config directory
+  ansible.builtin.file:
+    path: /etc/plymouth
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Deploy Plymouth main configuration
+  ansible.builtin.copy:
+    src: plymouth.conf
+    dest: /etc/plymouth/plymouth.conf
+    mode: "0644"
+  become: true
+
+# ---- Install custom Plymouth theme ----
+# Note: Theme files are managed by Chezmoi and installed via run_once script
+# This task ensures the directory exists and sets up the theme installation
+- name: Create Plymouth themes directory
+  ansible.builtin.file:
+    path: /usr/share/plymouth/themes/omarchy
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Check if Plymouth theme files exist (installed by Chezmoi)
+  ansible.builtin.stat:
+    path: "{{ ansible_user_dir }}/.config/plymouth/themes/omarchy/omarchy.script"
+  register: plymouth_theme_script
+  when: ansible_user_dir is defined
+
+- name: Deploy Plymouth theme files (if available)
+  ansible.builtin.copy:
+    src: "{{ ansible_user_dir }}/.config/plymouth/themes/omarchy/{{ item }}"
+    dest: /usr/share/plymouth/themes/omarchy/{{ item }}
+    mode: "0644"
+  become: true
+  loop:
+    - omarchy.plymouth
+    - omarchy.script
+  when: ansible_user_dir is defined and plymouth_theme_script.stat.exists
+  notify: Update Plymouth initramfs
+
+# ---- Set Plymouth theme as default ----
+- name: Set Omarchy theme as default Plymouth theme
+  ansible.builtin.command: plymouth-set-default-theme omarchy
+  become: true
+  changed_when: true
+  when: ansible_user_dir is defined and plymouth_theme_script.stat.exists
+  notify: Update Plymouth initramfs
+  ignore_errors: true
+
+# ---- Enable Plymouth service ----
+- name: Enable Plymouth service
+  ansible.builtin.systemd:
+    name: plymouth.service
+    enabled: true
+  become: true

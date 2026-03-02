@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Lock
+Exec=omarchy-lock-screen
+Icon=system-lock-screen
+Terminal=false
+Type=Application
+Categories=System;
+Keywords=Lock;Screen;Hyprlock;Sleep;Security;
+NoDisplay=true

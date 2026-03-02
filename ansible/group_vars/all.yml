@@ -1,0 +1,260 @@
+---
+# ============================================================================
+# Package lists
+# ============================================================================
+# Organized by role. Decisions from the migration plan are applied:
+# - 1password → bitwarden
+# - chromium → helium
+# - bash-only → zsh
+# - alacritty/kitty/tmux → ghostty + zellij
+# - nvim primary → cursor + helix (keep nvim installed)
+# - Drop: typora, signal, spotify, libreoffice, pinta, xournalpp,
+#          localsend, kdenlive
+# - Add: beeper, davinci-resolve, orcaslicer, cursor, helix, zellij, zsh
+
+# -- Desktop environment & compositor --
+packages_desktop:
+  - hyprland
+  - hypridle
+  - hyprlock
+  - hyprsunset
+  - hyprpicker
+  - hyprland-guiutils
+  - hyprland-preview-share-picker
+  - waybar
+  - mako
+  - swaybg
+  - swayosd
+  - sddm
+  - plymouth
+  - uwsm
+  - polkit-gnome
+  - xdg-desktop-portal-gtk
+  - xdg-desktop-portal-hyprland
+  - xdg-terminal-exec
+  - wayfreeze
+  - grim
+  - slurp
+  - satty
+  - wl-clipboard
+
+# -- Terminal & shell --
+packages_terminal:
+  - ghostty
+  - zsh                   # replaces bash as interactive shell
+  - zellij                # replaces tmux
+  - starship
+  - zoxide
+  - fzf
+  - bash-completion       # keep for scripts that need it
+
+# -- Core CLI tools --
+packages_cli:
+  - eza
+  - bat
+  - ripgrep
+  - fd
+  - dust
+  - jq
+  - tldr
+  - plocate
+  - tree-sitter-cli
+  - gum
+  - go-task
+  - fastfetch
+  - inxi
+  - usage
+  - less
+  - unzip
+  - whois
+  - inetutils
+  - imagemagick
+  - xmlstarlet
+  - expac
+  - man-db
+
+# -- Development --
+packages_dev:
+  - git
+  - lazygit
+  - github-cli
+  - docker
+  - docker-buildx
+  - docker-compose
+  - lazydocker
+  - mise
+  - ruby
+  - rust
+  - clang
+  - llvm
+  - dotnet-runtime-9.0
+  - luarocks
+  - python-poetry-core
+  - nvim                  # kept, but no longer $EDITOR
+  - opencode
+  - helix                 # new: terminal editor ($EDITOR)
+
+# -- GUI applications --
+packages_gui:
+  - bitwarden             # replaces 1password
+  - nautilus
+  - nautilus-python
+  - gnome-disk-utility
+  - gnome-calculator
+  - evince
+  - imv
+  - mpv
+  - obs-studio
+  - obsidian
+  - gpu-screen-recorder
+  - discord                # voice/text chat
+
+# -- Audio stack --
+packages_audio:
+  - alsa-utils
+  - pipewire
+  - pipewire-alsa
+  - pipewire-jack
+  - pipewire-pulse
+  - gst-plugin-pipewire
+  - wireplumber
+  - wiremix
+  - pamixer
+  - playerctl
+
+# -- Networking --
+packages_network:
+  - iwd
+  - avahi
+  - nss-mdns
+  - ufw
+  - ufw-docker
+  - wireless-regdb
+  - impala
+
+# -- Printing --
+packages_printing:
+  - cups
+  - cups-browsed
+  - cups-filters
+  - cups-pdf
+  - system-config-printer
+
+# -- Bluetooth --
+packages_bluetooth:
+  - bluetui
+  - bolt
+
+# -- Power & hardware --
+packages_hardware:
+  - brightnessctl
+  - power-profiles-daemon
+  - zram-generator
+  - socat                 # needed for Hyprland IPC monitor hotplug daemon
+
+# -- Fonts --
+packages_fonts:
+  - ttf-jetbrains-mono-nerd
+  - ttf-cascadia-mono-nerd
+  - noto-fonts
+  - noto-fonts-cjk
+  - noto-fonts-emoji
+  - noto-fonts-extra
+  - woff2-font-awesome
+
+# -- Filesystem & snapshots --
+packages_filesystem:
+  - btrfs-progs
+  - snapper
+  - limine
+  - limine-mkinitcpio-hook
+  - limine-snapper-sync
+  - exfatprogs
+  - cryptsetup              # LUKS disk encryption support
+
+# -- Wayland / Qt / GTK support --
+packages_wayland:
+  - qt5-wayland
+  - qt6-wayland
+  - kvantum-qt5
+  - gnome-keyring
+  - gnome-themes-extra
+  - libsecret
+  - gvfs-mtp
+  - gvfs-nfs
+  - gvfs-smb
+  - sushi
+  - ffmpegthumbnailer
+  - webp-pixbuf-loader
+  - python-gobject
+  - python-terminaltexteffects
+
+# -- Input methods --
+packages_input:
+  - fcitx5
+  - fcitx5-gtk
+  - fcitx5-qt
+
+# -- Walker / app launcher --
+# NOTE: walker and elephant may need AUR or local build after
+# detaching from the omarchy custom repo
+packages_launcher:
+  - yay                   # AUR helper
+
+# -- Secret management --
+packages_secrets:
+  - age                   # file encryption for chezmoi
+  - bitwarden-cli         # dynamic secrets via chezmoi templates
+
+# -- Kernel --
+packages_kernel:
+  - linux
+  - linux-firmware
+  - linux-headers
+  - base
+  - base-devel
+  - dkms
+
+# ============================================================================
+# AUR packages (installed via yay)
+# ============================================================================
+aur_packages:
+  - helium-browser-bin    # replaces chromium
+  - cursor-bin            # GUI editor
+  - beeper-latest-bin     # messaging
+  - slack-desktop         # team communication
+  - orcaslicer-bin        # 3D printer slicer
+  - davinci-resolve       # video editor
+  - walker                # app launcher (from AUR after omarchy repo removal)
+  - elephant              # walker helper
+
+# ============================================================================
+# Systemd services to enable
+# ============================================================================
+services_enabled:
+  - bluetooth.service
+  - cups.service
+  - cups-browsed.service
+  - avahi-daemon.service
+  - docker.service
+  - iwd.service
+  - sddm.service
+  - ufw.service
+  - plymouth.service
+
+# Systemd services/targets to disable/mask
+services_disabled:
+  - systemd-networkd-wait-online.service
+
+services_masked:
+  - systemd-networkd-wait-online.service
+
+# ============================================================================
+# User config
+# ============================================================================
+user_groups:
+  - docker
+  - input
+  - video
+
+user_shell: /usr/bin/zsh

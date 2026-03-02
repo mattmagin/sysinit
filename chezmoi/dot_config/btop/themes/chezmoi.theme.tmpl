@@ -1,0 +1,85 @@
+{{- /* Btop theme — managed by chezmoi, themed */ -}}
+
+# Main background
+theme[main_bg]="{{ .theme.background }}"
+
+# Main text color
+theme[main_fg]="{{ .theme.foreground }}"
+
+# Title color for boxes
+theme[title]="{{ .theme.foreground }}"
+
+# Highlight color for keyboard shortcuts
+theme[hi_fg]="{{ .theme.accent }}"
+
+# Background color of selected item
+theme[selected_bg]="{{ .theme.color8 }}"
+
+# Foreground color of selected item
+theme[selected_fg]="{{ .theme.accent }}"
+
+# Color of inactive/disabled text
+theme[inactive_fg]="{{ .theme.color8 }}"
+
+# Graph text color
+theme[graph_text]="{{ .theme.foreground }}"
+
+# Percentage meter background
+theme[meter_bg]="{{ .theme.color8 }}"
+
+# Misc process colors
+theme[proc_misc]="{{ .theme.foreground }}"
+
+# Box outline colors
+theme[cpu_box]="{{ .theme.color5 }}"
+theme[mem_box]="{{ .theme.color2 }}"
+theme[net_box]="{{ .theme.color1 }}"
+theme[proc_box]="{{ .theme.accent }}"
+
+# Divider line
+theme[div_line]="{{ .theme.color8 }}"
+
+# Temperature gradient
+theme[temp_start]="{{ .theme.color2 }}"
+theme[temp_mid]="{{ .theme.color3 }}"
+theme[temp_end]="{{ .theme.color1 }}"
+
+# CPU graph
+theme[cpu_start]="{{ .theme.color6 }}"
+theme[cpu_mid]="{{ .theme.color4 }}"
+theme[cpu_end]="{{ .theme.color5 }}"
+
+# Free meter
+theme[free_start]="{{ .theme.color5 }}"
+theme[free_mid]="{{ .theme.color4 }}"
+theme[free_end]="{{ .theme.color6 }}"
+
+# Cached meter
+theme[cached_start]="{{ .theme.color4 }}"
+theme[cached_mid]="{{ .theme.color6 }}"
+theme[cached_end]="{{ .theme.color5 }}"
+
+# Available meter
+theme[available_start]="{{ .theme.color3 }}"
+theme[available_mid]="{{ .theme.color1 }}"
+theme[available_end]="{{ .theme.color1 }}"
+
+# Used meter
+theme[used_start]="{{ .theme.color2 }}"
+theme[used_mid]="{{ .theme.color6 }}"
+theme[used_end]="{{ .theme.color4 }}"
+
+# Download graph
+theme[download_start]="{{ .theme.color3 }}"
+theme[download_mid]="{{ .theme.color1 }}"
+theme[download_end]="{{ .theme.color1 }}"
+
+# Upload graph
+theme[upload_start]="{{ .theme.color2 }}"
+theme[upload_mid]="{{ .theme.color6 }}"
+theme[upload_end]="{{ .theme.color4 }}"
+
+# Process gradient
+theme[process_start]="{{ .theme.color6 }}"
+theme[process_mid]="{{ .theme.color4 }}"
+theme[process_end]="{{ .theme.color5 }}"

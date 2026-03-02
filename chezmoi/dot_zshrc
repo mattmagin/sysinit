@@ -1,0 +1,249 @@
+# ===========================================================================
+# Zsh configuration — migrated from omarchy bash config
+# Managed by chezmoi
+# ===========================================================================
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# ---------------------------------------------------------------------------
+# Zinit plugin manager
+# ---------------------------------------------------------------------------
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+# Auto-install zinit if not present
+if [[ ! -d "$ZINIT_HOME" ]]; then
+  mkdir -p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+source "${ZINIT_HOME}/zinit.zsh"
+
+# ---------------------------------------------------------------------------
+# Plugins
+# ---------------------------------------------------------------------------
+# Fish-style autosuggestions (greyed-out as you type, → to accept)
+zinit light zsh-users/zsh-autosuggestions
+
+# Syntax highlighting (commands turn green/red as you type)
+zinit light zdharma-continuum/fast-syntax-highlighting
+
+# Rich tab completions for 200+ tools
+zinit light zsh-users/zsh-completions
+
+# History substring search (type partial, ↑/↓ to filter)
+zinit light zsh-users/zsh-history-substring-search
+
+# Auto-close brackets, quotes, backticks
+zinit light hlissner/zsh-autopair
+
+# Reminds you about existing aliases
+zinit light MichaelAquilina/zsh-you-should-use
+
+# ---------------------------------------------------------------------------
+# Completion system
+# ---------------------------------------------------------------------------
+autoload -Uz compinit && compinit
+zinit cdreplay -q
+
+# Case-insensitive completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# ---------------------------------------------------------------------------
+# History
+# ---------------------------------------------------------------------------
+HISTSIZE=32768
+SAVEHIST=$HISTSIZE
+HISTFILE=~/.zsh_history
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_find_no_dups
+
+# ---------------------------------------------------------------------------
+# Key bindings for history-substring-search
+# ---------------------------------------------------------------------------
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# ---------------------------------------------------------------------------
+# PATH
+# ---------------------------------------------------------------------------
+typeset -U path  # deduplicate
+path=(
+  "$HOME/.local/bin"
+  "$HOME/.cargo/bin"
+  "$HOME/.bun/bin"
+  "$HOME/go/bin"
+  $path
+)
+
+# ---------------------------------------------------------------------------
+# Environment variables
+# ---------------------------------------------------------------------------
+export EDITOR=hx
+export VISUAL=cursor
+export TERMINAL=ghostty
+export SUDO_EDITOR="$EDITOR"
+export BAT_THEME=ansi
+
+# ---------------------------------------------------------------------------
+# Tool integrations
+# ---------------------------------------------------------------------------
+if command -v starship &> /dev/null; then
+  eval "$(starship init zsh)"
+fi
+
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
+fi
+
+if command -v mise &> /dev/null; then
+  eval "$(mise activate zsh)"
+fi
+
+if command -v fzf &> /dev/null; then
+  eval "$(fzf --zsh)"
+fi
+
+# ---------------------------------------------------------------------------
+# Aliases — file system
+# ---------------------------------------------------------------------------
+if command -v eza &> /dev/null; then
+  alias ls='eza -lh --group-directories-first --icons=auto'
+  alias lsa='ls -a'
+  alias lt='eza --tree --level=2 --long --icons --git'
+  alias lta='lt -a'
+fi
+
+alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
+
+if command -v zoxide &> /dev/null; then
+  alias cd="zd"
+  zd() {
+    if [[ $# -eq 0 ]]; then
+      builtin cd ~ && return
+    elif [[ -d "$1" ]]; then
+      builtin cd "$1"
+    else
+      z "$@" && printf "\U000F17A9 " && pwd || echo "Error: Directory not found"
+    fi
+  }
+fi
+
+open() {
+  xdg-open "$@" >/dev/null 2>&1 &
+}
+
+# Directories
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# ---------------------------------------------------------------------------
+# Aliases — tools
+# ---------------------------------------------------------------------------
+alias c='opencode'
+alias d='docker'
+alias r='rails'
+
+n() { if [[ "$#" -eq 0 ]]; then nvim .; else nvim "$@"; fi; }
+
+# ---------------------------------------------------------------------------
+# Aliases — git
+# ---------------------------------------------------------------------------
+alias g='git'
+alias gcm='git commit -m'
+alias gcam='git commit -a -m'
+alias gcad='git commit -a --amend'
+
+# ---------------------------------------------------------------------------
+# Functions — compression & media
+# ---------------------------------------------------------------------------
+compress() { tar -czf "${1%/}.tar.gz" "${1%/}"; }
+alias decompress="tar -xzf"
+
+iso2sd() {
+  if [[ $# -ne 2 ]]; then
+    echo "Usage: iso2sd <input_file> <output_device>"
+    echo "Example: iso2sd ~/Downloads/ubuntu-25.04-desktop-amd64.iso /dev/sda"
+    echo -e "\nAvailable SD cards:"
+    lsblk -d -o NAME | grep -E '^sd[a-z]' | awk '{print "/dev/"$1}'
+  else
+    sudo dd bs=4M status=progress oflag=sync if="$1" of="$2"
+    sudo eject $2
+  fi
+}
+
+format-drive() {
+  if [[ $# -ne 2 ]]; then
+    echo "Usage: format-drive <device> <name>"
+    echo "Example: format-drive /dev/sda 'My Stuff'"
+    echo -e "\nAvailable drives:"
+    lsblk -d -o NAME -n | awk '{print "/dev/"$1}'
+  else
+    echo "WARNING: This will completely erase all data on $1 and label it '$2'."
+    read -rq "confirm?Are you sure you want to continue? (y/N): "
+    echo
+
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+      sudo wipefs -a "$1"
+      sudo dd if=/dev/zero of="$1" bs=1M count=100 status=progress
+      sudo parted -s "$1" mklabel gpt
+      sudo parted -s "$1" mkpart primary 1MiB 100%
+
+      partition="$([[ $1 == *"nvme"* ]] && echo "${1}p1" || echo "${1}1")"
+      sudo partprobe "$1" || true
+      sudo udevadm settle || true
+
+      sudo mkfs.exfat -n "$2" "$partition"
+
+      echo "Drive $1 formatted as exFAT and labeled '$2'."
+    fi
+  fi
+}
+
+transcode-video-1080p() {
+  ffmpeg -i $1 -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy ${1%.*}-1080p.mp4
+}
+
+transcode-video-4K() {
+  ffmpeg -i $1 -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k ${1%.*}-optimized.mp4
+}
+
+img2jpg() {
+  local img="$1"
+  shift
+  magick "$img" $@ -quality 95 -strip ${img%.*}-converted.jpg
+}
+
+img2jpg-small() {
+  local img="$1"
+  shift
+  magick "$img" $@ -resize 1080x\> -quality 95 -strip ${img%.*}-small.jpg
+}
+
+img2jpg-medium() {
+  local img="$1"
+  shift
+  magick "$img" $@ -resize 1800x\> -quality 95 -strip ${img%.*}-medium.jpg
+}
+
+img2png() {
+  local img="$1"
+  shift
+  magick "$img" $@ -strip -define png:compression-filter=5 \
+    -define png:compression-level=9 \
+    -define png:compression-strategy=1 \
+    -define png:exclude-chunk=all \
+    "${img%.*}-optimized.png"
+}
+
+# ---------------------------------------------------------------------------
+# User customizations
+# Add your own exports, aliases, and functions below.
+# ---------------------------------------------------------------------------
+# alias p='python'
+# alias cx="claude --permission-mode=plan --allow-dangerously-skip-permissions"

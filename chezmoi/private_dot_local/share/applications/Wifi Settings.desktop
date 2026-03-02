@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Wi-Fi Settings
+GenericName=Network Configuration
+Exec=omarchy-launch-wifi
+Icon=network-wireless
+Terminal=false
+Type=Application
+Categories=Settings;Network;
+Keywords=WiFi;Wi-Fi;Network;Wireless;Internet;Settings;Connection;
+NoDisplay=true

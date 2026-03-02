@@ -1,0 +1,25 @@
+---
+# Enable and disable systemd services declaratively
+
+- name: Enable systemd services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+  become: true
+  loop: "{{ services_enabled }}"
+
+- name: Disable systemd services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: false
+  become: true
+  loop: "{{ services_disabled }}"
+  failed_when: false
+
+- name: Mask systemd services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    masked: true
+  become: true
+  loop: "{{ services_masked }}"
+  failed_when: false

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Slack
+GenericName=Team Communication
+Exec=slack %U
+Icon=slack
+Terminal=false
+Type=Application
+Categories=Network;Chat;
+Keywords=slack;chat;messaging;team;work;communication;channels;

@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Omarchy
+Description=Custom disk encryption unlock UI matching system theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/omarchy
+ScriptFile=/usr/share/plymouth/themes/omarchy/omarchy.script

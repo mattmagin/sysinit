@@ -1,0 +1,40 @@
+// Zellij configuration — managed by chezmoi
+// Replaces tmux as terminal multiplexer
+
+// Use the default layout
+default_layout "default"
+
+// Mouse support
+mouse_mode true
+
+// Copy on select
+copy_on_select true
+
+// Scrollback
+scroll_buffer_size 50000
+
+// Pane frames (clean look)
+pane_frames false
+
+// Theme — match ghostty/system theme
+theme "default"
+
+// Session serialization (persist sessions across restarts)
+session_serialization true
+
+// Simplified UI (disable mode-switching hints after you're comfortable)
+// Set to true to see keybinding hints in the status bar
+simplified_ui false
+
+// Mirror terminal copy/paste to system clipboard
+copy_command "wl-copy"
+
+// Default shell
+default_shell "zsh"
+
+// Key bindings
+keybinds {
+  // Use Ctrl+A as the prefix (similar to tmux Ctrl+B but easier to reach)
+  // Uncomment and customize if desired:
+  // unbind "Ctrl b"
+}

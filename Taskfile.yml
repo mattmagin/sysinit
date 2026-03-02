@@ -1,0 +1,86 @@
+version: '3'
+
+vars:
+  ANSIBLE_DIR: ansible
+  CHEZMOI_DIR: chezmoi
+  ANSIBLE_BASE_CMD: ansible-playbook --connection=local --inventory inventory/localhost.yml --ask-become-pass setup.yml
+
+tasks:
+  default:
+    desc: List all available tasks
+    cmds:
+      - task --list
+
+  bootstrap:
+    desc: Full system setup from scratch (installs Ansible/Chezmoi, runs playbook, initializes dotfiles)
+    cmds:
+      - ./bootstrap.sh
+
+  ansible:
+    desc: Run full Ansible playbook (all roles)
+    dir: '{{.ANSIBLE_DIR}}'
+    cmds:
+      - '{{.ANSIBLE_BASE_CMD}}'
+
+  ansible:packages:
+    desc: Install/update packages only
+    dir: '{{.ANSIBLE_DIR}}'
+    cmds:
+      - '{{.ANSIBLE_BASE_CMD}} --tags packages'
+
+  ansible:gpu:
+    desc: GPU driver setup
+    dir: '{{.ANSIBLE_DIR}}'
+    cmds:
+      - '{{.ANSIBLE_BASE_CMD}} --tags gpu'
+
+  ansible:hardware:
+    desc: Hardware-specific configuration
+    dir: '{{.ANSIBLE_DIR}}'
+    cmds:
+      - '{{.ANSIBLE_BASE_CMD}} --tags hardware'
+
+  ansible:system-config:
+    desc: System config files (/etc/)
+    dir: '{{.ANSIBLE_DIR}}'
+    cmds:
+      - '{{.ANSIBLE_BASE_CMD}} --tags system-config'
+
+  ansible:services:
+    desc: Enable/disable systemd services
+    dir: '{{.ANSIBLE_DIR}}'
+    cmds:
+      - '{{.ANSIBLE_BASE_CMD}} --tags services'
+
+  ansible:user:
+    desc: User groups and shell configuration
+    dir: '{{.ANSIBLE_DIR}}'
+    cmds:
+      - '{{.ANSIBLE_BASE_CMD}} --tags user'
+
+  ansible:dev-tools:
+    desc: Dev tool bootstrapping (mise, bun)
+    dir: '{{.ANSIBLE_DIR}}'
+    cmds:
+      - '{{.ANSIBLE_BASE_CMD}} --tags dev-tools'
+
+  chezmoi:apply:
+    desc: Apply dotfiles
+    cmds:
+      - chezmoi apply
+
+  chezmoi:diff:
+    desc: Preview pending dotfile changes
+    cmds:
+      - chezmoi diff
+
+  chezmoi:init:
+    desc: Initialize chezmoi (prompts for machine profile, GPU type, etc.)
+    cmds:
+      - chezmoi init --source={{.CHEZMOI_DIR}} --apply
+
+  apply:
+    desc: Run full Ansible + Chezmoi apply
+    deps:
+      - ansible
+      - chezmoi:apply

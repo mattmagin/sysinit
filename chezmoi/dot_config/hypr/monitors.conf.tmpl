@@ -1,0 +1,22 @@
+{{- /* Hyprland monitor configuration — managed by chezmoi */ -}}
+
+# Display scaling for GTK apps
+env = GDK_SCALE,{{ .display.gdk_scale }}
+
+{{ if eq .machine.profile "framework13" -}}
+# Framework 13 internal display
+monitor = eDP-1, 2256x1504@60, auto, 1.504
+
+# Known external: MSI 49" ultrawide OLED
+# (verify desc: string with `hyprctl monitors` when connected)
+monitor = desc:Microstep MPG 491C OLED, 5120x1440@144, auto, 1
+
+# Any other external monitor: auto-detect
+monitor = , preferred, auto, auto
+{{ else if eq .machine.profile "desktop" -}}
+# Desktop: MSI 49" ultrawide OLED (single monitor)
+monitor = , 5120x1440@144, auto, {{ .display.scale }}
+{{ else -}}
+# Fallback: auto-detect everything
+monitor = , preferred, auto, auto
+{{ end -}}

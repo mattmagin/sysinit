@@ -1,0 +1,39 @@
+---
+# Hardware-specific detection and fixes
+
+# ---- Framework 13 detection ----
+- name: Read product name for hardware detection
+  ansible.builtin.slurp:
+    src: /sys/class/dmi/id/product_name
+  register: product_name_raw
+  failed_when: false
+
+- name: Set product name fact
+  ansible.builtin.set_fact:
+    product_name: "{{ (product_name_raw.content | default('') | b64decode).strip() }}"
+  when: product_name_raw is not failed
+
+- name: Install Framework 13 power management
+  community.general.pacman:
+    name:
+      - power-profiles-daemon
+    state: present
+  become: true
+  when: "'Framework' in product_name | default('')"
+
+# ---- ASUS ROG detection ----
+- name: Detect ASUS ROG hardware
+  ansible.builtin.shell: |
+    cat /sys/class/dmi/id/product_name 2>/dev/null | grep -qi 'rog\|republic of gamers' ||
+    cat /sys/class/dmi/id/board_name 2>/dev/null | grep -qi 'rog\|republic of gamers'
+  register: asus_rog
+  changed_when: false
+  failed_when: false
+
+- name: Install ASUS ROG packages
+  community.general.pacman:
+    name:
+      - asusctl
+    state: present
+  become: true
+  when: asus_rog.rc == 0

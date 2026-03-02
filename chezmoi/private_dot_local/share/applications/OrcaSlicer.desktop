@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=OrcaSlicer
+GenericName=3D Printer Slicer
+Exec=orca-slicer %F
+Icon=OrcaSlicer
+Terminal=false
+Type=Application
+Categories=Graphics;3DGraphics;Engineering;
+Keywords=3D;Printer;Slicer;FDM;PrusaSlicer;BambuStudio;Bambu;

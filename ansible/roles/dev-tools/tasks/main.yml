@@ -1,0 +1,22 @@
+---
+# Development tool bootstrapping via mise
+
+- name: Check if mise is installed
+  ansible.builtin.command: which mise
+  register: mise_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Node.js via mise
+  ansible.builtin.command: mise use -g node@latest
+  when: mise_check.rc == 0
+  register: mise_node
+  changed_when: "'installed' in mise_node.stdout | default('')"
+  become: false
+
+- name: Install Bun via mise
+  ansible.builtin.command: mise use -g bun@latest
+  when: mise_check.rc == 0
+  register: mise_bun
+  changed_when: "'installed' in mise_bun.stdout | default('')"
+  become: false

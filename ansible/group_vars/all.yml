@@ -35,12 +35,12 @@ packages_desktop:
 
 # -- Terminal & shell --
 packages_terminal:
-  - zsh                   # replaces bash as interactive shell
-  - zellij                # replaces tmux
+  - zsh # replaces bash as interactive shell
+  - zellij # replaces tmux
   - starship
   - zoxide
   - fzf
-  - bash-completion       # keep for scripts that need it
+  - bash-completion # keep for scripts that need it
 
 # -- Core CLI tools --
 packages_cli:
@@ -84,13 +84,13 @@ packages_dev:
   - dotnet-runtime-9.0
   - luarocks
   - python-poetry-core
-  - nvim                  # kept, but no longer $EDITOR
+  - nvim # kept, but no longer $EDITOR
   - opencode
-  - helix                 # new: terminal editor ($EDITOR)
+  - helix # new: terminal editor ($EDITOR)
 
 # -- GUI applications --
 packages_gui:
-  - bitwarden             # replaces 1password
+  - bitwarden # replaces 1password
   - nautilus
   - nautilus-python
   - gnome-disk-utility
@@ -141,7 +141,7 @@ packages_hardware:
   - brightnessctl
   - power-profiles-daemon
   - zram-generator
-  - socat                 # needed for Hyprland IPC monitor hotplug daemon
+  - socat # needed for Hyprland IPC monitor hotplug daemon
 
 # -- Fonts --
 packages_fonts:
@@ -161,7 +161,7 @@ packages_filesystem:
   - limine-mkinitcpio-hook
   - limine-snapper-sync
   - exfatprogs
-  - cryptsetup              # LUKS disk encryption support
+  - cryptsetup # LUKS disk encryption support
 
 # -- Wayland / Qt / GTK support --
 packages_wayland:
@@ -190,12 +190,12 @@ packages_input:
 # NOTE: walker and elephant may need AUR or local build after
 # detaching from the omarchy custom repo
 packages_launcher:
-  - yay                   # AUR helper
+  - yay # AUR helper
 
 # -- Secret management --
 packages_secrets:
-  - age                   # file encryption for chezmoi
-  - bitwarden-cli         # dynamic secrets via chezmoi templates
+  - age # file encryption for chezmoi
+  - bitwarden-cli # dynamic secrets via chezmoi templates
 
 # -- Kernel --
 packages_kernel:
@@ -210,23 +210,23 @@ packages_kernel:
 # AUR packages (installed via yay)
 # ============================================================================
 aur_packages:
-  - helium-browser-bin    # replaces chromium
-  - cursor-bin            # GUI editor
-  - beeper-latest-bin     # messaging
-  - slack-desktop         # team communication
-  - orcaslicer-bin        # 3D printer slicer
-  - davinci-resolve       # video editor
-  - walker                # app launcher (from AUR after omarchy repo removal)
-  - elephant              # walker helper
-  - hyprland-preview-share-picker-git  # Hyprland share picker with previews
-  - ghostty               # terminal emulator
-  - obsidian              # note-taking app
-  - gpu-screen-recorder   # screen recorder
-  - discord               # voice/text chat
+  - helium-browser-bin # replaces chromium
+  - cursor-bin # GUI editor
+  - beeper-latest-bin # messaging
+  - slack-desktop # team communication
+  - orcaslicer-bin # 3D printer slicer
+  - davinci-resolve # video editor
+  - walker # app launcher (from AUR after omarchy repo removal)
+  - elephant # walker helper
+  - hyprland-preview-share-picker-git # Hyprland share picker with previews
+  - ghostty # terminal emulator
+  - obsidian # note-taking app
+  - gpu-screen-recorder # screen recorder
+  - teamspeak # voice/text chat
   - hyprland-guiutils-git # Hyprland GUI utilities
-  - wayfreeze             # Wayland screen freeze tool
-  - satty                 # screenshot tool
-  - uwsm                  # Wayland session manager
+  - wayfreeze # Wayland screen freeze tool
+  - satty # screenshot tool
+  - uwsm # Wayland session manager
 
 # ============================================================================
 # Systemd services to enable

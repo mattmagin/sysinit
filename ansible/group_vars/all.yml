@@ -19,28 +19,22 @@ packages_desktop:
   - hyprlock
   - hyprsunset
   - hyprpicker
-  - hyprland-guiutils
-  - hyprland-preview-share-picker
   - waybar
   - mako
   - swaybg
   - swayosd
   - sddm
   - plymouth
-  - uwsm
   - polkit-gnome
   - xdg-desktop-portal-gtk
   - xdg-desktop-portal-hyprland
   - xdg-terminal-exec
-  - wayfreeze
   - grim
   - slurp
-  - satty
   - wl-clipboard
 
 # -- Terminal & shell --
 packages_terminal:
-  - ghostty
   - zsh                   # replaces bash as interactive shell
   - zellij                # replaces tmux
   - starship
@@ -105,9 +99,6 @@ packages_gui:
   - imv
   - mpv
   - obs-studio
-  - obsidian
-  - gpu-screen-recorder
-  - discord                # voice/text chat
 
 # -- Audio stack --
 packages_audio:
@@ -227,6 +218,15 @@ aur_packages:
   - davinci-resolve       # video editor
   - walker                # app launcher (from AUR after omarchy repo removal)
   - elephant              # walker helper
+  - hyprland-preview-share-picker-git  # Hyprland share picker with previews
+  - ghostty               # terminal emulator
+  - obsidian              # note-taking app
+  - gpu-screen-recorder   # screen recorder
+  - discord               # voice/text chat
+  - hyprland-guiutils-git # Hyprland GUI utilities
+  - wayfreeze             # Wayland screen freeze tool
+  - satty                 # screenshot tool
+  - uwsm                  # Wayland session manager
 
 # ============================================================================
 # Systemd services to enable

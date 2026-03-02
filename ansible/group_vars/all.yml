@@ -28,7 +28,6 @@ packages_desktop:
   - polkit-gnome
   - xdg-desktop-portal-gtk
   - xdg-desktop-portal-hyprland
-  - xdg-terminal-exec
   - grim
   - slurp
   - wl-clipboard
@@ -227,6 +226,7 @@ aur_packages:
   - wayfreeze # Wayland screen freeze tool
   - satty # screenshot tool
   - uwsm # Wayland session manager
+  - xdg-terminal-exec # XDG terminal execution helper
 
 # ============================================================================
 # Systemd services to enable
